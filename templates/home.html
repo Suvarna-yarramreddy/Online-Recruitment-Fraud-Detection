@@ -35,7 +35,11 @@
                   <!-- RD Navbar Toggle-->
                   <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                   <!-- RD Navbar Brand-->
-                  
+                 <div class="rd-navbar-brand">
+                    <span style="font-size: 22px; font-weight: bold; color: white;">
+                      Online Recriutment Fraud Detection
+                    </span>
+                  </div>
                 </div>
                 <div class="rd-navbar-main-element">
                   <div class="rd-navbar-nav-wrap">
@@ -48,7 +52,7 @@
 					  
                   
                       <li class="rd-nav-item active"><a class="rd-nav-link" href="/profile">Profile</a></li>
-                      <li class="rd-nav-item active"><a class="rd-nav-link" href="/login">Logout</a>
+                      <li class="rd-nav-item active"><a class="rd-nav-link" href="/">Logout</a>
                       </li>
                       
                       
@@ -93,19 +97,18 @@
           <div class="container">
             <div class="row row-30 justify-content-md-center align-items-lg-center">
               <div class="col-md-9 col-lg-6">
-						<h1>FORM</h1>
+						<h3>Check if a Job is Real or Fake</h3>
                 
                 <br>
                 
                 <br>
 						<div class="col-xl-6 col-12">
-							<form method = "POST" enctype="multipart/form-data" action = "/PredictAction">    
-								<input type="file" name="file" accept=".csv"> <br>
-                
-                <br>
-								<input type = "submit" value="Upload">  
-							</form>  
-		
+                <form method="POST" action="/PredictAction">
+                  <label><h6>Enter Job Description:</h6></label><br>
+                  <textarea name="job_desc" rows="6" cols="50" placeholder="Paste job description here..." required></textarea>
+                  <br><br>
+                  <input type="submit" value="Predict">
+              </form>      
 						</div>
 					</div>
 				  </div>

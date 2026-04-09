@@ -97,40 +97,28 @@ def index():
 def about():
     return render_template('about.html')
 
-
-@app.route('/notebook')
-def notebook():
-    return render_template('FraudJobDetection.html')
-
-
 @app.route('/PredictAction', methods=['GET', 'POST'])
 def PredictAction():
     if request.method == 'POST':
-        f = request.files.get('file')
-        data_filename = secure_filename(f.filename)
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'],data_filename))
-        session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'],data_filename)
-        data_file_path = session.get('uploaded_data_file_path', None)
-        test_data = pd.read_csv(data_file_path,encoding='unicode_escape')
-        data = test_data['description'].ravel()
+        job_desc = request.form.get('job_desc')
+        if not job_desc or job_desc.strip() == "":
+            return render_template('result.html', msg="Please enter job description")
         extension_cnn2d = getModel()
-        temp = []
-        for i in range(len(data)):
-            text = data[i].strip().lower()#loop each test data and then clean by applying NLP techniques 
-            text = cleanText(text)
-            temp.append(text)
-        bert_encode = berts.encode(temp)#apply bert to convert text into numeric embedding
-        bert_encode = np.reshape(bert_encode, (bert_encode.shape[0], 32, 24, 1))#reshape data as per CNN2D
-        predict = extension_cnn2d.predict(bert_encode)#apply extension to predict job Type
+        text = job_desc.strip().lower()
+        text = cleanText(text)
+        temp = [text]
+        bert_encode = berts.encode(temp)
+        bert_encode = np.reshape(bert_encode, (bert_encode.shape[0], 32, 24, 1))
+        predict = extension_cnn2d.predict(bert_encode)
+        pred = np.argmax(predict[0])
         output = ""
-        for i in range(len(predict)):#display each job predicted output            
-            pred = np.argmax(predict[i])
-            output += "Job Details = "+data[i]+"<br/>"
-            output += "Predicted Job Type ====> "+labels[pred]+"<br/><br/>"        
+        output += "Job Details = " + job_desc[:500] + "...<br/><br/>"
+        output += "Predicted Job Type ====> " + labels[pred]
+
         return render_template('result.html', msg=output)
 
-@app.route('/logon')
-def logon():
+@app.route('/register')
+def register():
 	return render_template('register.html')
 
 @app.route('/login')
@@ -170,13 +158,13 @@ def signin():
     data = cur.fetchone()
 
     if data == None:
-        return render_template("signin.html")    
+        return render_template("register.html")    
 
     elif mail1 == str(data[0]) and password1 == str(data[1]):
         session['user'] = mail1
         return redirect(url_for('home'))
     else:
-        return render_template("login.html")
+        return render_template("signin.html")
 
 @app.route('/profile')
 def profile():

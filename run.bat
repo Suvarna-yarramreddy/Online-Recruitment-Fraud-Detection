@@ -1,2 +1,0 @@
-python -m notebook
-pause
